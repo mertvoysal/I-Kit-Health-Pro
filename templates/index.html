@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I-Kit Health Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --apple-text: #1d1d1f; 
+            --apple-subtext: #86868b; 
+            --glass-bg: rgba(255, 255, 255, 0.45); 
+            --glass-border: rgba(255, 255, 255, 0.8); 
+            --glass-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); 
+            --accent-purple: #7c4dff;
+            --accent-blue: #0ea5e9;
+            --accent-orange: #ff9f43;
+            --apple-intelligence-gradient: linear-gradient(
+                90deg,
+                #2f80d9 0%,
+                #4f96eb 14%,
+                #7a5cf4 36%,
+                #c052f2 56%,
+                #f0448f 72%,
+                #f15d4c 86%,
+                #f57c2f 100%
+            );
+            --space-1: 8px;
+            --space-2: 16px;
+            --space-3: 24px;
+            --space-4: 32px;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            color: var(--apple-text); margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh;
+            background-color: #f0f4f8;
+            background-image: 
+                radial-gradient(at 15% 15%, rgba(219, 234, 254, 1) 0px, transparent 40%),
+                radial-gradient(at 85% 15%, rgba(243, 232, 255, 1) 0px, transparent 40%),
+                radial-gradient(at 85% 85%, rgba(209, 250, 229, 0.8) 0px, transparent 40%),
+                radial-gradient(at 15% 85%, rgba(254, 226, 226, 0.8) 0px, transparent 40%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -30%;
+            pointer-events: none;
+            background: conic-gradient(from 180deg at 50% 50%, rgba(124,77,255,0.09), rgba(14,165,233,0.08), rgba(255,159,67,0.08), rgba(124,77,255,0.09));
+            filter: blur(80px);
+            z-index: -1;
+            animation: drift 22s linear infinite;
+        }
+        @keyframes drift {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.08); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .top-nav {
+            width: 100%; max-width: 1150px; display: flex; justify-content: flex-start; margin-bottom: var(--space-2);
+        }
+        .ethics-banner {
+            width: 100%;
+            max-width: 1150px;
+            margin-bottom: var(--space-2);
+            padding: 10px var(--space-2);
+            border-radius: 14px;
+            background: linear-gradient(160deg, rgba(255,255,255,0.72), rgba(255,255,255,0.5));
+            border: 1px solid rgba(255,255,255,0.88);
+            box-shadow: 0 8px 24px rgba(26, 36, 56, 0.08), inset 0 1px 0 rgba(255,255,255,0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: #5f6368;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            text-align: center;
+        }
+        .result-ethics-banner {
+            margin-top: var(--space-2);
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.82);
+            color: #6b6b73;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.15px;
+            text-align: center;
+        }
+        
+        .segmented-control {
+            display: inline-flex; background: rgba(255,255,255,0.55); padding: 4px; border-radius: 14px; 
+            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.92); box-shadow: 0 8px 24px rgba(26, 36, 56, 0.10), inset 0 1px 0 rgba(255,255,255,0.7);
+        }
+        
+        .segment-btn { padding: 8px var(--space-2); text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--apple-subtext); transition: 0.3s; font-size: 12px; }
+        .segment-btn.active { background: white; color: #6f47f7; box-shadow: 0 8px 18px rgba(80, 55, 185, 0.18); }
+        
+        .container { max-width: 1150px; width: 100%; display: grid; grid-template-columns: 1.1fr 1fr; gap: var(--space-4); }
+        
+        .header-title { text-align: center; grid-column: 1 / -1; margin-bottom: var(--space-2); }
+        .header-title h1 {
+            font-size: 38px; margin: 0; letter-spacing: -1.2px; font-weight: 800;
+            background: var(--apple-intelligence-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+            background-size: 100% 100%;
+            background-position: 50% 50%;
+            display: inline-block; filter: drop-shadow(0 4px 15px rgba(166, 81, 255, 0.3));
+            transition: transform 0.35s ease, filter 0.35s ease;
+        }
+        .header-title h1:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 8px 24px rgba(124, 77, 255, 0.35));
+        }
+        @keyframes titleGradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .header-title p { color: #515154; font-size: 13px; margin-top: 5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 12px 34px rgba(24, 35, 55, 0.09), inset 0 1px 0 rgba(255,255,255,0.55); padding: var(--space-3);
+        }
+
+        .input-layout { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+        .input-group { margin-bottom: 10px; }
+        label { display: block; font-size: 11px; color: var(--apple-subtext); font-weight: 600; margin-bottom: 4px; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        input:not([type="checkbox"]):not([type="radio"]), select {
+            width: 100%; padding: 12px 16px; border-radius: 18px; font-size: 14px; box-sizing: border-box; transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.9); box-shadow: 0 2px 10px rgba(0,0,0,0.02); outline: none; appearance: none;
+            color: var(--apple-text) !important; font-weight: 600;
+        }
+        
+        input:not([type="checkbox"]):not([type="radio"]):hover, select:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(124, 77, 255, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: rgba(124, 77, 255, 0.25);
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%237c4dff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 1rem top 50%; background-size: 0.7rem auto; cursor: pointer;
+        }
+        
+        input:not([type="checkbox"]):not([type="radio"]):focus, select:focus { background: #ffffff; border-color: rgba(124, 77, 255, 0.6) !important; box-shadow: 0 8px 25px rgba(124, 77, 255, 0.20) !important; transform: translateY(-2px); }
+        
+        .toggle-advanced { font-size: 12px; color: #7928ca; font-weight: 600; cursor: pointer; margin-top: 5px; margin-bottom: 10px; transition: 0.3s; display: inline-block; }
+        .toggle-advanced:hover { color: #0ea5e9; }
+        .info-text { font-size: 13px; color: var(--apple-subtext); line-height: 1.45; margin-bottom: var(--space-2); margin-top: var(--space-2); font-weight: 450; }
+        
+        .analyze-btn {
+            grid-column: 1 / -1; width: 100%; padding: 16px; background: var(--apple-intelligence-gradient);
+            color: white; border: none; border-radius: 18px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(121, 40, 202, 0.3); letter-spacing: 0.5px;
+        }
+        .analyze-btn:hover { transform: translateY(-1px) scale(1.005); box-shadow: 0 10px 25px rgba(121, 40, 202, 0.45); }
+        .analyze-btn:active { transform: scale(0.985); }
+        .analyze-btn:disabled { opacity: 0.82; cursor: not-allowed; transform: none; }
+        .analyze-btn.loading {
+            background-size: 200% 200%;
+            animation: buttonShimmer 1.3s linear infinite;
+        }
+        @keyframes buttonShimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .dashboard { display: flex; flex-direction: column; gap: var(--space-3); }
+        .card-container {
+            background: var(--glass-bg); backdrop-filter: blur(30px) saturate(200%); border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 10px 30px rgba(24, 35, 55, 0.08); padding: var(--space-3); display: none; transition: all 0.5s ease;
+        }
+
+        .diag-wrapper { text-align: center; }
+        .diag-title { font-size: 12px; color: var(--apple-subtext); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+        .diag-result { font-size: 36px; font-weight: 700; color: #1d1d1f; margin: 8px 0; letter-spacing: -1px; }
+        .diag-confidence { font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 16px; display: inline-block; margin-top: 4px; }
+        
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+        .metric-item {
+            background: linear-gradient(160deg, rgba(255,255,255,0.62), rgba(255,255,255,0.36));
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.92);
+            height: 206px;
+            padding: 12px 10px 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 12px rgba(255,255,255,0.35), 0 8px 24px rgba(31, 38, 135, 0.07);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .gauge-title {
+            text-align: center;
+            color: #6b6b73;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            margin: 2px 0 2px;
+        }
+        .gauge-legend {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 6px 0 2px;
+        }
+        .legend-chip {
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #5f6368;
+            background: rgba(255,255,255,0.62);
+        }
+        .legend-chip.low, .legend-chip.high { background: rgba(255, 134, 145, 0.20); }
+        .legend-chip.normal { background: rgba(120, 233, 187, 0.28); }
+        .gauge-canvas { width: 100% !important; height: calc(100% - 22px) !important; display: block; }
+        .results-live-content { transition: opacity 0.2s ease; }
+        .results-live-content.hidden { opacity: 0; pointer-events: none; }
+        .results-skeleton {
+            display: none;
+            margin-top: 8px;
+        }
+        .results-skeleton.visible { display: block; }
+        .skeleton-line {
+            height: 14px;
+            border-radius: 10px;
+            margin: 0 auto 10px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.75) 50%, rgba(255,255,255,0.34) 100%);
+            background-size: 200% 100%;
+            animation: skeletonFlow 1.2s ease infinite;
+        }
+        .skeleton-line.wide { width: 62%; height: 16px; }
+        .skeleton-line.mid { width: 38%; }
+        .skeleton-gauges {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-2);
+            margin-top: 14px;
+        }
+        .skeleton-gauge {
+            height: 180px;
+            border-radius: 18px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0.75) 50%, rgba(255,255,255,0.34) 100%);
+            background-size: 200% 100%;
+            animation: skeletonFlow 1.2s ease infinite;
+        }
+        @keyframes skeletonFlow {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .apple-table-container {
+            overflow-x: auto;
+            background: linear-gradient(160deg, rgba(255,255,255,0.62), rgba(255,255,255,0.36));
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 4px 18px rgba(255,255,255,0.26), 0 10px 28px rgba(31, 38, 135, 0.08);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            margin-top: 10px;
+        }
+        .doctor-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .doctor-table th { padding: 14px 16px; color: #7a7a80; font-weight: 600; font-size: 11px; border-bottom: 1px solid rgba(0,0,0,0.05); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; background: rgba(255,255,255,0.42); }
+        .doctor-table td { padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); color: #1d1d1f; font-size: 14px; font-weight: 500; transition: background 0.3s; }
+        .doctor-table tr:last-child td { border-bottom: none; }
+        .doctor-table tbody tr:hover td { background: rgba(255, 255, 255, 0.72); }
+        .doctor-row-animated {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: rowLift 0.36s ease forwards;
+        }
+        @keyframes rowLift {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .no-wrap { white-space: nowrap; }
+
+        .badge-endo { background: rgba(121, 40, 202, 0.15); color: #7928ca; padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; display: inline-block; }
+        .badge-internal { background: rgba(52, 199, 89, 0.15); color: #34c759; padding: 4px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; display: inline-block; }
+        
+        .map-btn { color: #007aff; text-decoration: none; font-weight: 600; font-size: 12px; background: rgba(0, 122, 255, 0.15); padding: 6px 14px; border-radius: 16px; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s; }
+        .map-btn:hover { background: #007aff; color: white; }
+
+        .panel-header { color: #1d1d1f; font-size: 16px; font-weight: 700; letter-spacing: -0.5px; margin-top: 0; margin-bottom: 16px; }
+        .placeholder { text-align: center; color: var(--apple-subtext); font-size: 15px; padding: 60px 0; font-weight: 600; }
+        .panel-header-reset { margin-top: 0; }
+        .full-width { grid-column: 1 / -1; }
+        .placeholder-panel { padding: 0; }
+        .section-divider { border: 0; height: 1px; background: rgba(0,0,0,0.05); margin: 24px 0; }
+        .about-panel { display: none; max-width: 800px; width: 100%; margin-top: 20px; }
+        .about-header { font-size: 22px; }
+        .about-text { font-size: 15px; line-height: 1.6; color: var(--apple-text); }
+        .about-list { font-size: 14px; line-height: 1.8; color: var(--apple-text); }
+        .about-clinical-note {
+            margin-top: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #6b6b73;
+            font-weight: 600;
+        }
+        .doc-name { font-weight: 700; font-size: 13px; }
+        .hospital-name { color: var(--apple-subtext); font-size: 12px; }
+        .distance-text { color: #8b64f9; font-weight: 700; }
+        .healthy-note { text-align: center; padding: 24px; color: #515154; font-style: italic; }
+        .advanced-labs-hidden { display: none; }
+        .location-status { margin-top: 6px; font-size: 11px; color: var(--apple-subtext); min-height: 14px; }
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(244, 248, 255, 0.42);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .loading-overlay.visible { opacity: 1; pointer-events: all; }
+        .loading-card {
+            min-width: 260px;
+            padding: 24px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.88);
+            background: linear-gradient(160deg, rgba(255,255,255,0.74), rgba(255,255,255,0.52));
+            box-shadow: 0 18px 45px rgba(24, 35, 55, 0.14), inset 0 1px 0 rgba(255,255,255,0.65);
+            text-align: center;
+        }
+        .loading-spinner {
+            width: 38px;
+            height: 38px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            border: 3px solid rgba(124, 77, 255, 0.2);
+            border-top-color: var(--accent-purple);
+            border-right-color: var(--accent-blue);
+            animation: spin 0.9s linear infinite;
+        }
+        .loading-title { font-size: 14px; font-weight: 800; color: #2a2a32; letter-spacing: 0.3px; }
+        .loading-subtitle { font-size: 12px; color: #6f6f76; margin-top: 4px; }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 980px) {
+            .container { grid-template-columns: 1fr; gap: 20px; }
+            .top-nav { justify-content: center; }
+            .header-title h1 { font-size: 34px; }
+            .dashboard { gap: 16px; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .header-title h1 { font-size: 30px; letter-spacing: -0.8px; }
+            .header-title p { font-size: 11px; letter-spacing: 0.7px; }
+            .ethics-banner { font-size: 11px; line-height: 1.35; padding: 9px 12px; }
+            .result-ethics-banner { font-size: 10px; line-height: 1.35; }
+            .glass-panel, .card-container { padding: 16px; border-radius: 22px; }
+            .input-layout { grid-template-columns: 1fr; gap: 12px; }
+            .metrics-grid { grid-template-columns: 1fr; gap: 14px; }
+            .metric-item { height: 192px; border-radius: 18px; }
+            .gauge-title { font-size: 12px; margin-bottom: 0; }
+            .gauge-legend { flex-wrap: wrap; gap: 6px; }
+            .legend-chip { font-size: 9px; padding: 3px 8px; }
+            .analyze-btn { padding: 14px; font-size: 14px; border-radius: 14px; }
+            .doctor-table th, .doctor-table td { padding: 10px 10px; font-size: 12px; }
+            .map-btn { padding: 5px 10px; font-size: 11px; }
+            .diag-result { font-size: 30px; }
+            .loading-card { min-width: 220px; padding: 18px; }
+            .skeleton-gauges { grid-template-columns: 1fr; }
+            .skeleton-gauge { height: 140px; }
+        }
+
+        @media (hover: none) {
+            .header-title h1:hover {
+                animation: none;
+                transform: none;
+                filter: drop-shadow(0 4px 15px rgba(166, 81, 255, 0.3));
+            }
+        }
+        .toast-stack {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 10050;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast-item {
+            min-width: 250px;
+            max-width: 360px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.88);
+            background: linear-gradient(160deg, rgba(255,255,255,0.78), rgba(255,255,255,0.58));
+            box-shadow: 0 14px 30px rgba(24, 35, 55, 0.16);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #2b2e33;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            transform: translateY(-6px) scale(0.98);
+            animation: toastIn 0.22s ease forwards;
+        }
+        .toast-item.warning {
+            border-color: rgba(255, 159, 67, 0.5);
+            background: linear-gradient(160deg, rgba(255, 238, 219, 0.88), rgba(255, 248, 236, 0.76));
+            color: #8f4e0a;
+        }
+        .toast-item.error {
+            border-color: rgba(255, 107, 107, 0.45);
+            background: linear-gradient(160deg, rgba(255, 226, 230, 0.88), rgba(255, 240, 242, 0.76));
+            color: #8f2e3d;
+        }
+        @keyframes toastIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ethics-banner">This system does not provide a medical diagnosis; it is a clinical decision-support tool to assist physicians.</div>
+
+    <div class="top-nav">
+        <div class="segmented-control">
+            <div class="segment-btn active" onclick="switchTab(event, 'analysis')">Analysis</div>
+            <div class="segment-btn" onclick="switchTab(event, 'about')">About</div>
+        </div>
+    </div>
+
+    <div class="container" id="tab-analysis">
+        <div class="header-title">
+            <h1>I-Kit Health Pro</h1>
+            <p>Intelligent Thyroid Diagnostics</p>
+        </div>
+
+        <div class="glass-panel">
+            <div class="input-layout">
+                <div>
+                    <h3 class="panel-header panel-header-reset">1. Patient Profile</h3>
+                    <div class="input-group"><label>Age</label><input type="number" id="age" placeholder="E.g., 45"></div>
+                    <div class="input-group"><label>Gender</label><select id="gender"><option value="Female">Female</option><option value="Male">Male</option></select></div>
+                    <div class="input-group">
+                        <label>Location</label>
+                        <select id="district">
+                            <option value="__live__" selected>Current Location (Default)</option>
+                            <option value="Bornova">Bornova</option><option value="Karsiyaka">Karsiyaka</option>
+                            <option value="Buca">Buca</option><option value="Konak">Konak</option>
+                            <option value="Cigli">Cigli</option><option value="Balcova">Balcova</option>
+                        </select>
+                        <div id="location-status" class="location-status"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="panel-header panel-header-reset">2. Lab Results</h3>
+                    <div class="input-group"><label>TSH</label><input type="number" id="tsh" step="0.01" placeholder="Enter TSH"></div>
+                    <div class="input-group"><label>FTI</label><input type="number" id="fti" step="0.1" placeholder="Enter FTI"></div>
+                    
+                    <div class="toggle-advanced" id="toggle-btn" onclick="toggleAdvanced()">+ Show Advanced Panel (T3, TT4, T4U)</div>
+                    
+                    <div id="advanced-labs" class="advanced-labs-hidden">
+                        <div class="input-group"><label>TT3</label><input type="number" id="t3" step="0.01" placeholder="Enter TT3"></div>
+                        <div class="input-group"><label>TT4</label><input type="number" id="tt4" step="0.1" placeholder="Enter TT4"></div>
+                        <div class="input-group"><label>T4U</label><input type="number" id="t4u" step="0.01" placeholder="Enter T4U"></div>
+                    </div>
+                </div>
+
+                <div class="full-width">
+                    <div class="info-text">If you do not know your laboratory values, simply click <b>Analyze Health Data</b>. The system will use average values to guide you and recommend a suitable specialist.</div>
+                    <button class="analyze-btn" onclick="analyzeData()">Analyze Health Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="glass-panel placeholder-panel" id="placeholder-card"><div class="placeholder">Awaiting patient parameters...</div></div>
+
+            <div class="card-container" id="results-card">
+                <div id="results-live-content" class="results-live-content">
+                    <div class="diag-wrapper">
+                        <div class="diag-title">System Diagnosis</div>
+                        <div class="diag-result" id="diag-text"></div>
+                        <div class="diag-confidence" id="conf-badge"></div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="gauge-legend">
+                        <div class="legend-chip low">Low</div>
+                        <div class="legend-chip normal">Normal</div>
+                        <div class="legend-chip high">High</div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <div class="gauge-title">TSH (mIU/L)</div>
+                            <canvas id="gauge-tsh" class="gauge-canvas"></canvas>
+                        </div>
+                        <div class="metric-item">
+                            <div class="gauge-title">FREE T4 / FTI</div>
+                            <canvas id="gauge-fti" class="gauge-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div id="result-ethics-banner" class="result-ethics-banner">This system does not provide a medical diagnosis; it is a clinical decision-support tool to assist physicians.</div>
+                </div>
+                <div id="results-skeleton" class="results-skeleton">
+                    <div class="skeleton-line wide"></div>
+                    <div class="skeleton-line mid"></div>
+                    <div class="skeleton-gauges">
+                        <div class="skeleton-gauge"></div>
+                        <div class="skeleton-gauge"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container" id="table-card">
+                <h3 class="panel-header" id="table-header">Recommended Specialists</h3>
+                <div class="apple-table-container">
+                    <table class="doctor-table" id="doc-table">
+                        <thead><tr><th>Specialist</th><th>Department</th><th>Institution</th><th>Distance</th><th>Action</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-panel about-panel" id="tab-about">
+        <h2 class="panel-header about-header">About the I-Kit Project</h2>
+        <p class="about-text">I-Kit is an AI-based digital health assistant developed to guide family physicians and patients in the early diagnosis of thyroid diseases.</p>
+        <ul class="about-list">
+            <li>TUBITAK (Scientific and Technological Research Council of Turkey) - 2209-A Program</li>
+            <li>Advisor: Prof. Dr. Gözde Ulutagay</li>
+            <li>Manager: Mert Voysal | Researcher: Caner Doğukan Aydemir</li>
+            <li>Engine: Trained using the CatBoost model.</li>
+        </ul>
+        <p class="about-clinical-note">Clinical responsibility belongs to licensed healthcare professionals; this tool is for decision support only.</p>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay" aria-hidden="true">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <div class="loading-title" id="loading-title">Analyzing Data</div>
+            <div class="loading-subtitle" id="loading-subtitle">Please wait while we process your report.</div>
+        </div>
+    </div>
+    <div id="toast-stack" class="toast-stack"></div>
+
+    <script>
+        let currentLocation = null;
+        let tshGaugeChart = null;
+        let ftiGaugeChart = null;
+
+        const glassGaugeLabelPlugin = {
+            id: 'glassGaugeLabelPlugin',
+            afterDraw(chart, args, pluginOptions) {
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return;
+
+                const { left, right, top, bottom } = chartArea;
+                const centerX = (left + right) / 2;
+                const chartHeight = bottom - top;
+                const valueY = top + (chartHeight * 0.64);
+                const tickY = bottom + 8;
+
+                const opts = pluginOptions || {};
+                const valueText = opts.valueText ?? '';
+                const minText = opts.minText ?? '0';
+                const midText = opts.midText ?? '';
+                const maxText = opts.maxText ?? '';
+
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#1d1d1f';
+                ctx.font = '700 28px -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif';
+                ctx.fillText(valueText, centerX, valueY);
+
+                ctx.fillStyle = '#8a8a92';
+                ctx.font = '500 11px -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(minText, left + 2, tickY);
+                ctx.textAlign = 'center';
+                ctx.fillText(midText, centerX, tickY);
+                ctx.textAlign = 'right';
+                ctx.fillText(maxText, right - 2, tickY);
+                ctx.restore();
+            }
+        };
+
+        function switchTab(event, tab) {
+            document.getElementById('tab-analysis').style.display = tab === 'analysis' ? 'grid' : 'none';
+            document.getElementById('tab-about').style.display = tab === 'about' ? 'block' : 'none';
+            document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+
+        function toggleAdvanced() {
+            const panel = document.getElementById('advanced-labs');
+            const btn = document.getElementById('toggle-btn');
+            const isHidden = window.getComputedStyle(panel).display === 'none';
+            if (isHidden) {
+                panel.style.display = 'block';
+                btn.innerText = '- Hide Advanced Panel';
+            } else {
+                panel.style.display = 'none';
+                btn.innerText = '+ Show Advanced Panel (T3, TT4, T4U)';
+            }
+        }
+
+        function getLocationStatusElement() {
+            return document.getElementById('location-status');
+        }
+
+        function setLoadingState(isLoading, title = 'Analyzing Data', subtitle = 'Please wait while we process your report.') {
+            const overlay = document.getElementById('loading-overlay');
+            const titleEl = document.getElementById('loading-title');
+            const subtitleEl = document.getElementById('loading-subtitle');
+            const analyzeBtn = document.querySelector('.analyze-btn');
+
+            titleEl.innerText = title;
+            subtitleEl.innerText = subtitle;
+
+            overlay.classList.toggle('visible', isLoading);
+            overlay.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
+
+            if (analyzeBtn) {
+                analyzeBtn.disabled = isLoading;
+                analyzeBtn.classList.toggle('loading', isLoading);
+            }
+        }
+        
+        function toggleResultsSkeleton(isLoading) {
+            const liveContent = document.getElementById('results-live-content');
+            const skeleton = document.getElementById('results-skeleton');
+            if (!liveContent || !skeleton) return;
+            liveContent.classList.toggle('hidden', isLoading);
+            skeleton.classList.toggle('visible', isLoading);
+        }
+
+        function showToast(message, tone = 'warning', timeoutMs = 2800) {
+            const stack = document.getElementById('toast-stack');
+            if (!stack) return;
+            const toast = document.createElement('div');
+            toast.className = `toast-item ${tone}`;
+            toast.innerText = message;
+            stack.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-6px) scale(0.98)';
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 220);
+            }, timeoutMs);
+        }
+
+        function getDisplayDoctorName(rawName) {
+            if (!rawName) return '';
+            return rawName
+                .replace(/^Assoc\. Prof\. Dr\.\s*/i, 'Associate Professor ')
+                .replace(/^Prof\. Dr\.\s*/i, 'Professor ')
+                .replace(/^Spec\. Dr\.\s*/i, 'Specialist ');
+        }
+
+        function easeOutCubic(t) {
+            return 1 - Math.pow(1 - t, 3);
+        }
+
+        function createGlassGaugeConfig(value, maxValue, normalLow, normalHigh, valueFormat) {
+            const clampedValue = Math.max(0, Math.min(value, maxValue));
+            const safeNormalHigh = Math.min(normalHigh, maxValue);
+            const safeNormalLow = Math.min(normalLow, safeNormalHigh);
+            const midPoint = (maxValue / 2);
+            // Concentric ring geometry: inner blue arc passes through the exact centerline
+            // of the outer reference ring.
+            const outerRadius = 100;
+            const outerCutout = 74;
+            const outerCenterline = (outerRadius + outerCutout) / 2; // 87
+            const innerThickness = 7;
+            const innerRadius = outerCenterline + (innerThickness / 2); // 90.5
+            const innerCutout = outerCenterline - (innerThickness / 2); // 83.5
+            const outerRadiusStr = `${outerRadius}%`;
+            const outerCutoutStr = `${outerCutout}%`;
+            const innerRadiusStr = `${innerRadius}%`;
+            const innerCutoutStr = `${innerCutout}%`;
+
+            return {
+                data: {
+                    datasets: [
+                        {
+                            data: [
+                                safeNormalLow,
+                                Math.max(0, safeNormalHigh - safeNormalLow),
+                                Math.max(0, maxValue - safeNormalHigh)
+                            ],
+                            backgroundColor: [
+                                'rgba(255, 134, 145, 0.28)',
+                                'rgba(120, 233, 187, 0.38)',
+                                'rgba(255, 134, 145, 0.28)'
+                            ],
+                            borderWidth: 0,
+                            radius: outerRadiusStr,
+                            cutout: outerCutoutStr
+                        },
+                        {
+                            data: [clampedValue, Math.max(0, maxValue - clampedValue)],
+                            backgroundColor: ['rgba(90, 114, 255, 0.97)', 'rgba(255, 255, 255, 0.00)'],
+                            borderWidth: 0,
+                            borderRadius: 999,
+                            radius: innerRadiusStr,
+                            cutout: innerCutoutStr
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutCubic'
+                    },
+                    rotation: 270,
+                    circumference: 180,
+                    layout: { padding: { top: 4, left: 10, right: 10, bottom: 24 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false },
+                        glassGaugeLabelPlugin: {
+                            valueText: value.toLocaleString(undefined, { minimumFractionDigits: valueFormat === '.2f' ? 2 : 1, maximumFractionDigits: valueFormat === '.2f' ? 2 : 1 }),
+                            minText: '0',
+                            midText: midPoint.toLocaleString(undefined, { maximumFractionDigits: maxValue <= 10 ? 1 : 0 }),
+                            maxText: maxValue.toLocaleString(undefined, { maximumFractionDigits: maxValue <= 10 ? 1 : 0 })
+                        }
+                    }
+                }
+            };
+        }
+
+        function createOrUpdateGauge(canvasId, chartInstance, gaugeConfig) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return chartInstance;
+            const ctx = canvas.getContext('2d');
+
+            if (!chartInstance) {
+                return new Chart(ctx, {
+                    type: 'doughnut',
+                    data: gaugeConfig.data,
+                    options: gaugeConfig.options,
+                    plugins: [glassGaugeLabelPlugin]
+                });
+            }
+
+            chartInstance.data = gaugeConfig.data;
+            chartInstance.options = gaugeConfig.options;
+            chartInstance.update();
+            return chartInstance;
+        }
+
+        function renderPremiumGaugesAnimated(targetTsh, targetFti) {
+            const tshUpper = Math.max(8, Math.ceil((targetTsh + 1.2) / 2) * 2);
+            const ftiUpper = Math.max(180, Math.ceil((targetFti + 20) / 20) * 20);
+
+            const tshConfig = createGlassGaugeConfig(targetTsh, tshUpper, 0.45, 4.12, '.2f');
+            const ftiConfig = createGlassGaugeConfig(targetFti, ftiUpper, 70, 140, '.1f');
+
+            tshGaugeChart = createOrUpdateGauge('gauge-tsh', tshGaugeChart, tshConfig);
+            ftiGaugeChart = createOrUpdateGauge('gauge-fti', ftiGaugeChart, ftiConfig);
+        }
+
+        async function resolveLiveLocationIfEnabled() {
+            const selectedDistrict = document.getElementById('district').value;
+            const useLive = selectedDistrict === '__live__';
+            const statusEl = getLocationStatusElement();
+
+            if (!useLive) {
+                currentLocation = null;
+                statusEl.innerText = '';
+                return null;
+            }
+
+            if (!navigator.geolocation) {
+                statusEl.innerText = 'Location service is not supported in this browser.';
+                return null;
+            }
+
+            const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            if (!window.isSecureContext && !isLocalhost) {
+                statusEl.innerText = 'Current location requires HTTPS (or localhost). Using selected district.';
+                return null;
+            }
+
+            statusEl.innerText = 'Fetching your current location...';
+            setLoadingState(true, 'Collecting Location', 'Securely checking your current position...');
+
+            return new Promise((resolve) => {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLocation = {
+                            lat: Number(position.coords.latitude.toFixed(6)),
+                            lng: Number(position.coords.longitude.toFixed(6))
+                        };
+                        statusEl.innerText = 'Current location connected.';
+                        resolve(currentLocation);
+                    },
+                    (error) => {
+                        currentLocation = null;
+                        const errorMessages = {
+                            1: 'Location permission denied. Using selected district.',
+                            2: 'Location unavailable right now. Using selected district.',
+                            3: 'Location request timed out. Using selected district.'
+                        };
+                        statusEl.innerText = errorMessages[error.code] || 'Could not access current location. Using selected district.';
+                        resolve(null);
+                    },
+                    { enableHighAccuracy: true, timeout: 6000, maximumAge: 30000 }
+                );
+            });
+        }
+
+        async function analyzeData() {
+            setLoadingState(true);
+            const placeholderCard = document.getElementById('placeholder-card');
+            const resultsCard = document.getElementById('results-card');
+            if (placeholderCard && placeholderCard.style.display !== 'none') {
+                placeholderCard.style.display = 'none';
+            }
+            if (resultsCard) {
+                resultsCard.style.display = 'block';
+            }
+            toggleResultsSkeleton(true);
+            try {
+                const liveLocation = await resolveLiveLocationIfEnabled();
+                setLoadingState(true, 'Running AI Analysis', 'Generating diagnosis and specialist routing...');
+
+                const selectedDistrict = document.getElementById('district').value;
+                const districtForPayload = selectedDistrict === '__live__' ? 'Bornova' : selectedDistrict;
+                const payload = {
+                    age: document.getElementById('age').value, 
+                    gender: document.getElementById('gender').value,
+                    district: districtForPayload,
+                    tsh: document.getElementById('tsh').value,
+                    fti: document.getElementById('fti').value, 
+                    t3: document.getElementById('t3').value,
+                    tt4: document.getElementById('tt4').value, 
+                    t4u: document.getElementById('t4u').value,
+                    lat: liveLocation ? liveLocation.lat : '',
+                    lng: liveLocation ? liveLocation.lng : ''
+                };
+                
+                const response = await fetch('/predict', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(payload) 
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok || data.error) { 
+                    showToast(data.error || 'Analysis failed. Please try again.', 'error');
+                    return; 
+                }
+
+                toggleResultsSkeleton(false);
+                document.getElementById('result-ethics-banner').innerText = data.disclaimer || 'This system does not provide a medical diagnosis; it is a clinical decision-support tool to assist physicians.';
+            
+                const confBadge = document.getElementById('conf-badge');
+            
+                if(data.diagnosis === 'Healthy') {
+                    document.getElementById('diag-text').innerText = data.diagnosis;
+                    confBadge.innerText = "Confidence: " + data.confidence + "%";
+                    confBadge.style.background = "rgba(52, 199, 89, 0.15)"; 
+                    confBadge.style.color = "#34c759";
+                } else if(data.diagnosis === 'Unknown') {
+                    document.getElementById('diag-text').innerText = "Awaiting Lab Data";
+                    confBadge.innerText = "Location-Based Routing"; 
+                    confBadge.style.background = "rgba(255, 159, 67, 0.15)"; 
+                    confBadge.style.color = "#ff9f43";
+                } else {
+                    document.getElementById('diag-text').innerText = data.diagnosis;
+                    confBadge.innerText = "Confidence: " + data.confidence + "%";
+                    confBadge.style.background = "rgba(166, 81, 255, 0.15)"; 
+                    confBadge.style.color = "#a651ff";
+                }
+
+                renderPremiumGaugesAnimated(Number(data.tsh_val), Number(data.fti_val));
+
+                const tableCard = document.getElementById('table-card');
+                const tbody = document.querySelector('#doc-table tbody');
+                tbody.innerHTML = '';
+            
+                if(data.diagnosis !== 'Healthy' && data.doctors && data.doctors.length > 0) {
+                    tableCard.style.display = 'block';
+                    document.getElementById('table-header').innerText = data.distance_source === 'live_route'
+                        ? "Recommended Specialists (Road Distance)"
+                        : data.distance_source === 'live_location_fallback'
+                        ? "Recommended Specialists (Approx. Distance)"
+                        : "Recommended Specialists";
+                    data.doctors.forEach(doc => {
+                        const specClass = doc.Specialty === 'Endocrinology' ? 'badge-endo' : 'badge-internal';
+                        const row = document.createElement('tr');
+                        row.className = 'doctor-row-animated';
+                        const rowIndex = tbody.children.length;
+                        row.style.animationDelay = `${Math.min(rowIndex * 60, 260)}ms`;
+                        const displayName = getDisplayDoctorName(doc.Doctor_Name);
+                        row.innerHTML = `
+                            <td class="no-wrap doc-name">${displayName}</td>
+                            <td class="no-wrap"><span class="${specClass}">${doc.Specialty}</span></td>
+                            <td class="hospital-name">${doc.Hospital}</td>
+                            <td class="no-wrap distance-text">${doc.Distance} km${doc.Eta_Min ? ` • ${doc.Eta_Min} min` : ''}</td>
+                            <td><a href="${doc.Map_Url}" target="_blank" rel="noopener noreferrer" class="map-btn">Open Map</a></td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else if(data.diagnosis === 'Healthy') {
+                    tableCard.style.display = 'block';
+                    document.getElementById('table-header').innerText = "System Suggestion";
+                    tbody.innerHTML = `<tr><td colspan="5" class="healthy-note">Since the values are normal, no doctor recommendation is required.</td></tr>`;
+                } else { 
+                    tableCard.style.display = 'none'; 
+                }
+            } catch (error) {
+                showToast('An unexpected error occurred. Please try again.', 'error');
+            } finally {
+                toggleResultsSkeleton(false);
+                setLoadingState(false);
+            }
+        }
+
+    </script>
+</body>
+</html>

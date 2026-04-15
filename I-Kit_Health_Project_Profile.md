@@ -73,7 +73,6 @@ The evaluation framework is structured to support transparent and repeatable ass
 - **Recall (macro, mean):** 0.9095
 - **F1 (macro, mean):** 0.9170
 
-
 ---
 
 ## Routing and Real-World Utility

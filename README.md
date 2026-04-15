@@ -45,6 +45,20 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `artifacts/` - trained model and metadata
 - `thyroidDF.csv` - source dataset
 - `evaluate_2209a.py` - reproducible evaluation script
+- `build_msc_profile_pdf.py` - project profile PDF builder
+
+## Data and Usage Notice
+
+- The dataset file (`thyroidDF.csv`) is included for research and educational demonstration in this repository.
+- Before any public redistribution or product use, verify external dataset rights and licensing constraints independently.
+- This repository is intended for academic/portfolio demonstration and clinical decision-support prototyping.
+
+## Reproducibility
+
+- Model file: `artifacts/catboost_thyroid_model.cbm`
+- Metadata file: `artifacts/model_metadata.json`
+- Re-evaluation script: `evaluate_2209a.py`
+- Generated evaluation outputs are intentionally excluded from version control to keep the repository clean.
 
 ## Clinical Safety Note
 

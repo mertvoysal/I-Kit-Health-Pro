@@ -23,3 +23,7 @@ Thumbs.db
 
 # Local generated files
 *.log
+*.pdf
+artifacts/2209a_metrics.json
+artifacts/2209a_metrics.md
+artifacts/2209a_confusion_matrix.csv

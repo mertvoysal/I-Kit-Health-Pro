@@ -10,7 +10,7 @@ from reportlab.platypus import HRFlowable, Image, Paragraph, SimpleDocTemplate, 
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SOURCE_MD = BASE_DIR / "I-Kit_Project_Profile_MSc_2026.md"
+SOURCE_MD = BASE_DIR / "I-Kit_Health_Project_Profile.md"
 TARGET_PDF = BASE_DIR / "I-Kit_Health_Project_Profile.pdf"
 CURRENT_SNAPSHOT_PATHS = [
     Path(

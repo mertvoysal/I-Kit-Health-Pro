@@ -2,6 +2,23 @@
 
 AI-assisted thyroid decision-support and specialist recommendation platform for early thyroid risk assessment.
 
+## Quick Start
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Run the Flask app:
+   ```bash
+   python app.py
+   ```
+3. Open:
+   - `http://localhost:7860`
+
+## Interface Preview
+
+![I-Kit Health Pro interface](docs/images/app-overview.png)
+
 ## Project Background
 
 This project was developed with the scope and support framework of **TUBITAK 2209-A (University Students Research Projects Support Program)** and expanded into a deployable clinical decision-support prototype.
@@ -21,19 +38,6 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - **Frontend:** HTML, CSS, JavaScript, Chart.js
 - **Deployment:** Docker-ready setup
 
-## Local Run
-
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Start the app:
-   ```bash
-   python app.py
-   ```
-3. Open:
-   - `http://localhost:7860`
-
 ## Live Demo
 
 - Hugging Face Space: <https://huggingface.co/spaces/mertvoysal/I-Kit-Health-Pro>
@@ -45,7 +49,8 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `artifacts/` - trained model and metadata
 - `thyroidDF.csv` - source dataset
 - `evaluate_2209a.py` - reproducible evaluation script
-- `build_project_profile_pdf.py` - project profile PDF builder
+- `scripts/build_project_profile_pdf.py` - project profile PDF builder
+- `scripts/build_application_pdf.py` - alternative application PDF builder
 - `archive/legacy/` - archived historical scripts and documents
 
 ## Data and Usage Notice

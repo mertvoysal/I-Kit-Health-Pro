@@ -14,12 +14,8 @@ PROJECT_ROOT = BASE_DIR.parent
 SOURCE_MD = PROJECT_ROOT / "I-Kit_Health_Project_Profile.md"
 TARGET_PDF = PROJECT_ROOT / "I-Kit_Health_Project_Profile.pdf"
 CURRENT_SNAPSHOT_PATHS = [
-    Path(
-        r"C:\Users\mertv\.cursor\projects\c-Users-mertv-OneDrive-Desktop-2026-I-KIT-IKit-Health\assets\c__Users_mertv_AppData_Roaming_Cursor_User_workspaceStorage_196d4a4d74d4907211c95bd63169de5d_images_image-bd76af93-59a3-48b6-8c5c-93c83e3f94ae.png"
-    ),
-    Path(
-        r"C:\Users\mertv\.cursor\projects\c-Users-mertv-OneDrive-Desktop-2026-I-KIT-IKit-Health\assets\c__Users_mertv_AppData_Roaming_Cursor_User_workspaceStorage_196d4a4d74d4907211c95bd63169de5d_images_image-2b766c62-3e85-4fd8-adc4-07475e0f2d72.png"
-    ),
+    PROJECT_ROOT / "docs" / "images" / "current-snapshot-1.png",
+    PROJECT_ROOT / "docs" / "images" / "current-snapshot-2.png",
 ]
 
 

@@ -20,6 +20,7 @@ hf_space_upload/
 Thumbs.db
 .idea/
 .vscode/
+.cursorrules
 
 # Local generated files
 *.log

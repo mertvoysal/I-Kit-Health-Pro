@@ -51,6 +51,7 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `evaluate_2209a.py` - reproducible evaluation script
 - `scripts/build_project_profile_pdf.py` - project profile PDF builder
 - `scripts/build_application_pdf.py` - alternative application PDF builder
+- `scripts/upload_to_hf_space.py` - Hugging Face Space upload helper
 - `archive/legacy/` - archived historical scripts and documents
 
 ## Data and Usage Notice

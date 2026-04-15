@@ -14,20 +14,14 @@ from reportlab.platypus import (
 )
 
 
-TARGET_PDF = Path(
-    r"C:\Users\mertv\OneDrive\Desktop\-\2026\YüksekLisans\BELGELER\Project\I-Kit_Project_Summary_Mert_Voysal_Updated_2026.pdf"
-)
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
+TARGET_PDF = PROJECT_ROOT / "I-Kit_Health_Application_Summary.pdf"
 
 SCREENSHOT_PATHS = [
-    Path(
-        r"C:\Users\mertv\.cursor\projects\c-Users-mertv-OneDrive-Desktop-2026-I-KIT-IKit-Health\assets\c__Users_mertv_AppData_Roaming_Cursor_User_workspaceStorage_196d4a4d74d4907211c95bd63169de5d_images_image-2f829496-92b3-43f2-ae53-ce2eb2b038da.png"
-    ),
-    Path(
-        r"C:\Users\mertv\.cursor\projects\c-Users-mertv-OneDrive-Desktop-2026-I-KIT-IKit-Health\assets\c__Users_mertv_AppData_Roaming_Cursor_User_workspaceStorage_196d4a4d74d4907211c95bd63169de5d_images_image-95dcb0cb-be56-45c7-b8d2-7afb63337caf.png"
-    ),
-    Path(
-        r"C:\Users\mertv\.cursor\projects\c-Users-mertv-OneDrive-Desktop-2026-I-KIT-IKit-Health\assets\c__Users_mertv_AppData_Roaming_Cursor_User_workspaceStorage_196d4a4d74d4907211c95bd63169de5d_images_image-c2a827d1-2991-4f7d-b37a-677931906bd7.png"
-    ),
+    PROJECT_ROOT / "docs" / "images" / "app-overview.png",
+    PROJECT_ROOT / "docs" / "images" / "current-snapshot-1.png",
+    PROJECT_ROOT / "docs" / "images" / "current-snapshot-2.png",
 ]
 
 

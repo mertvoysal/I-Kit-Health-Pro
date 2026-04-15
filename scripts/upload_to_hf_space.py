@@ -7,6 +7,7 @@ from huggingface_hub import HfApi
 REPO_ID = "mertvoysal/I-Kit-Health-Pro"
 REPO_TYPE = "space"
 BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
 
 INCLUDE_PATHS = [
     "app.py",
@@ -38,7 +39,7 @@ def main() -> None:
     print(f"Space ready: https://huggingface.co/spaces/{REPO_ID}")
 
     for rel_path in INCLUDE_PATHS:
-        src = BASE_DIR / rel_path
+        src = PROJECT_ROOT / rel_path
         if not src.exists():
             raise FileNotFoundError(f"Missing required file: {src}")
         api.upload_file(

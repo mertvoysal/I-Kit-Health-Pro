@@ -46,6 +46,7 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `thyroidDF.csv` - source dataset
 - `evaluate_2209a.py` - reproducible evaluation script
 - `build_project_profile_pdf.py` - project profile PDF builder
+- `archive/legacy/` - archived historical scripts and documents
 
 ## Data and Usage Notice
 

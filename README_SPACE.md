@@ -28,7 +28,9 @@ AI-assisted thyroid decision-support and specialist recommendation platform for 
 
 ## Interface Preview
 
-![I-Kit Health Pro interface](docs/images/app-overview.png)
+Current production interface:
+
+![I-Kit Health Pro post-analysis UI](docs/images/hf-ui-after-analysis.png)
 
 ### Latest UI Snapshots
 

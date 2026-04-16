@@ -60,7 +60,7 @@ This project was developed with the scope and support framework of **TUBITAK 220
 
 ## Live Demo
 
-- Hugging Face Space: <https://huggingface.co/spaces/mertvoysal/I-Kit-Health-Pro>
+- Hugging Face Space: [I-Kit Health Pro](https://huggingface.co/spaces/mertvoysal/I-Kit-Health-Pro)
 
 ## Project Structure
 

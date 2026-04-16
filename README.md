@@ -1,6 +1,6 @@
 ---
 title: I-Kit Health Pro
-emoji: stethoscope
+emoji: 🩺
 colorFrom: blue
 colorTo: purple
 sdk: docker

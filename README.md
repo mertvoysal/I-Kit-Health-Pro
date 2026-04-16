@@ -2,6 +2,8 @@
 
 AI-assisted thyroid decision-support and specialist recommendation platform for early thyroid risk assessment.
 
+> Note: This is the GitHub-focused README. Hugging Face Space metadata is maintained in `README_SPACE.md` and applied during Space upload.
+
 ## Quick Start
 
 1. Install dependencies:
@@ -12,8 +14,7 @@ AI-assisted thyroid decision-support and specialist recommendation platform for 
    ```bash
    python app.py
    ```
-3. Open:
-   - `http://localhost:7860`
+3. Open `http://localhost:7860`
 
 ## Interface Preview
 

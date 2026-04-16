@@ -12,6 +12,8 @@ pinned: false
 
 AI-assisted thyroid decision-support and specialist recommendation platform for early thyroid risk assessment.
 
+> Space Deployment Note: This file is uploaded to Hugging Face as `README.md` to provide required Space metadata.
+
 ## Quick Start
 
 1. Install dependencies:
@@ -22,8 +24,7 @@ AI-assisted thyroid decision-support and specialist recommendation platform for 
    ```bash
    python app.py
    ```
-3. Open:
- - `http://localhost:7860`
+3. Open `http://localhost:7860`
 
 ## Interface Preview
 

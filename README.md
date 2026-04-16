@@ -53,6 +53,10 @@ This project was developed with the scope and support framework of **TUBITAK 220
 
 - Hugging Face Space: [I-Kit Health Pro](https://huggingface.co/spaces/mertvoysal/I-Kit-Health-Pro)
 
+## Release Workflow
+
+- Pre-release quality gate: `RELEASE_CHECKLIST.md`
+
 ## Project Structure
 
 - `app.py` - Flask application and ML inference logic
@@ -60,6 +64,7 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `artifacts/` - trained model and metadata
 - `thyroidDF.csv` - source dataset
 - `scripts/upload_to_hf_space.py` - Hugging Face Space upload helper
+- `RELEASE_CHECKLIST.md` - release readiness checklist
 
 ## Data and Usage Notice
 

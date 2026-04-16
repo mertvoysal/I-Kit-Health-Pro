@@ -29,6 +29,16 @@ AI-assisted thyroid decision-support and specialist recommendation platform for 
 
 ![I-Kit Health Pro interface](docs/images/app-overview.png)
 
+### Latest UI Snapshots
+
+Pre-analysis state (patient input and baseline layout):
+
+![I-Kit Health Pro pre-analysis UI](docs/images/hf-ui-before-analysis.png)
+
+Post-analysis state (diagnosis, gauges, and specialist routing table):
+
+![I-Kit Health Pro post-analysis UI](docs/images/hf-ui-after-analysis.png)
+
 ## Project Background
 
 This project was developed with the scope and support framework of **TUBITAK 2209-A (University Students Research Projects Support Program)** and expanded into a deployable clinical decision-support prototype.

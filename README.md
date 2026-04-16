@@ -1,3 +1,13 @@
+---
+title: I-Kit Health Pro
+emoji: stethoscope
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # I-Kit Health Pro
 
 AI-assisted thyroid decision-support and specialist recommendation platform for early thyroid risk assessment.

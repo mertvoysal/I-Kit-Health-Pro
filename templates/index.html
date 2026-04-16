@@ -31,6 +31,8 @@
             --space-4: 32px;
         }
         
+        * { box-sizing: border-box; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             color: var(--apple-text); margin: 0; padding: 20px;
@@ -264,6 +266,9 @@
 
         .apple-table-container {
             overflow-x: auto;
+            max-width: 100%;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
             background: linear-gradient(160deg, rgba(255,255,255,0.62), rgba(255,255,255,0.36));
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -368,7 +373,10 @@
         }
 
         @media (max-width: 768px) {
+            html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
             body { padding: 12px; }
+            .top-nav, .ethics-banner, .container { width: 100%; max-width: 100%; }
+            .container > *, .dashboard > *, .glass-panel, .card-container { min-width: 0; }
             .header-title h1 { font-size: 30px; letter-spacing: -0.8px; }
             .header-title p { font-size: 11px; letter-spacing: 0.7px; }
             .ethics-banner { font-size: 11px; line-height: 1.35; padding: 9px 12px; }
@@ -382,11 +390,14 @@
             .legend-chip { font-size: 9px; padding: 3px 8px; }
             .analyze-btn { padding: 14px; font-size: 14px; border-radius: 14px; }
             .doctor-table th, .doctor-table td { padding: 10px 10px; font-size: 12px; }
+            .doctor-table { min-width: 620px; }
             .map-btn { padding: 5px 10px; font-size: 11px; }
             .diag-result { font-size: 30px; }
-            .loading-card { min-width: 220px; padding: 18px; }
+            .loading-card { min-width: 0; width: min(92vw, 320px); padding: 18px; }
             .skeleton-gauges { grid-template-columns: 1fr; }
             .skeleton-gauge { height: 140px; }
+            .toast-stack { left: 10px; right: 10px; top: 10px; }
+            .toast-item { min-width: 0; max-width: 100%; }
         }
 
         @media (hover: none) {

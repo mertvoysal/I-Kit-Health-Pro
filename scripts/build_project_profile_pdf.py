@@ -1,12 +1,11 @@
 from pathlib import Path
 from datetime import datetime
-
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm
-from reportlab.platypus import HRFlowable, Image, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.platypus import HRFlowable, Image, KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -170,23 +169,77 @@ def build_pdf():
         author="Mert Voysal",
     )
     generated_on = datetime.now().strftime("%d %b %Y")
-
     def draw_footer(canvas, document):
         canvas.saveState()
         canvas.setFont("Helvetica", 8)
         canvas.setFillColor(colors.HexColor("#6B7280"))
-        canvas.drawString(document.leftMargin, 1.3 * cm, f"Generated: {generated_on}")
+        canvas.drawString(document.leftMargin, 1.3 * cm, generated_on)
         canvas.drawCentredString(A4[0] / 2, 1.3 * cm, "I-Kit Health Pro | Project Profile")
         canvas.drawRightString(A4[0] - document.rightMargin, 1.3 * cm, f"Page {canvas.getPageNumber()}")
         canvas.restoreState()
 
     story = []
-    for item_type, value in parsed:
+    i = 0
+    while i < len(parsed):
+        item_type, value = parsed[i]
         if item_type == "title":
             story.append(Paragraph(_inline_format(value), styles["ProfileTitle"]))
+            i += 1
             continue
         if item_type == "heading":
-            story.append(Paragraph(_inline_format(value), styles["ProfileHeading"]))
+            if value == "Technical Architecture":
+                story.append(PageBreak())
+            if value == "Routing and Real-World Utility":
+                story.append(PageBreak())
+
+            heading_para = Paragraph(_inline_format(value), styles["ProfileHeading"])
+
+            if value == "Technical Architecture":
+                # Keep main section title with the first subsection title.
+                if i + 1 < len(parsed) and parsed[i + 1][0] == "heading":
+                    sub_heading = Paragraph(_inline_format(parsed[i + 1][1]), styles["ProfileHeading"])
+                    story.append(KeepTogether([heading_para, sub_heading]))
+                    i += 2
+                    continue
+
+            # Keep heading with full bullet block when present.
+            if i + 1 < len(parsed) and parsed[i + 1][0] == "bullet":
+                keep_items = [heading_para]
+                j = i + 1
+                while j < len(parsed) and parsed[j][0] == "bullet":
+                    keep_items.append(
+                        Paragraph(
+                            _inline_format(parsed[j][1]),
+                            styles["ProfileBullet"],
+                            bulletText="\u2022",
+                        )
+                    )
+                    j += 1
+                story.append(KeepTogether(keep_items))
+                i = j
+                continue
+
+            # Otherwise keep heading with at least the first content line.
+            if i + 1 < len(parsed) and parsed[i + 1][0] == "body":
+                next_value = parsed[i + 1][1]
+                if (
+                    next_value.startswith("**Applicant:**")
+                    or next_value.startswith("**Target Program:**")
+                    or next_value.startswith("**Target Use:**")
+                    or next_value.startswith("**Project Origin:**")
+                    or next_value.startswith("**Role:**")
+                    or next_value.startswith("**Date:**")
+                    or next_value.startswith("**One-Line Summary:**")
+                ):
+                    next_para = Paragraph(_inline_format(next_value), styles["ProfileMeta"])
+                else:
+                    next_para = Paragraph(_inline_format(next_value), styles["ProfileBody"])
+                story.append(KeepTogether([heading_para, next_para]))
+                i += 2
+                continue
+
+            story.append(heading_para)
+            i += 1
             continue
         if item_type == "body":
             if (
@@ -201,6 +254,7 @@ def build_pdf():
                 story.append(Paragraph(_inline_format(value), styles["ProfileMeta"]))
             else:
                 story.append(Paragraph(_inline_format(value), styles["ProfileBody"]))
+            i += 1
             continue
         if item_type == "bullet":
             story.append(
@@ -210,6 +264,7 @@ def build_pdf():
                     bulletText="\u2022",
                 )
             )
+            i += 1
             continue
         if item_type == "rule":
             story.append(
@@ -221,34 +276,52 @@ def build_pdf():
                     spaceAfter=6,
                 )
             )
+            i += 1
             continue
         if item_type == "spacer":
             story.append(Spacer(1, 4))
+            i += 1
 
     story.append(Spacer(1, 8))
-    story.append(
-        Paragraph(
-            "Visual annex below includes the current interface snapshots from the latest application state.",
-            styles["ProfileNote"],
-        )
-    )
-    story.append(Spacer(1, 6))
-    story.append(Paragraph("Current Interface Snapshots", styles["ProfileHeading"]))
 
-    snapshot_idx = 1
+    snapshot_images = []
     for snapshot_path in CURRENT_SNAPSHOT_PATHS:
         if not snapshot_path.exists():
             continue
         image = Image(str(snapshot_path))
         image._restrictSize(16.2 * cm, 10.2 * cm)
-        story.append(image)
+        snapshot_images.append(image)
+
+    if snapshot_images:
+        # Keep the section title with the first image.
+        story.append(
+            KeepTogether(
+                [
+                    Paragraph("Current Interface Snapshots", styles["ProfileHeading"]),
+                    Spacer(1, 4),
+                    snapshot_images[0],
+                ]
+            )
+        )
+        for image in snapshot_images[1:]:
+            story.append(Spacer(1, 8))
+            story.append(image)
+
+    added_snapshots = len(snapshot_images)
+    if added_snapshots >= 2:
         story.append(
             Paragraph(
-                f"Figure {snapshot_idx}: Current I-Kit Health Pro interface snapshot.",
+                "Figure 1 and Figure 2: Current I-Kit Health Pro interface snapshot.",
                 styles["SnapshotCaption"],
             )
         )
-        snapshot_idx += 1
+    elif added_snapshots == 1:
+        story.append(
+            Paragraph(
+                "Figure 1: Current I-Kit Health Pro interface snapshot.",
+                styles["SnapshotCaption"],
+            )
+        )
 
     doc.build(story, onFirstPage=draw_footer, onLaterPages=draw_footer)
 

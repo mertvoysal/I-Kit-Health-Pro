@@ -124,9 +124,3 @@ This project demonstrates:
 
 It reflects both research rigor and engineering execution expected in a graduate-level data science track.
 
----
-
-## Note for Portfolio Submission
-
-This version is intentionally prepared as a text-first professional profile.  
-Updated interface screenshots and live demo links can be appended as a separate visual annex when required by the program portal.

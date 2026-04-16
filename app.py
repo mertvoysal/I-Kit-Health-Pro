@@ -1,7 +1,15 @@
+import os
+if os.name == "nt":
+    # Work around Windows WMI stalls observed during pandas startup.
+    import platform
+    _arch = os.environ.get("PROCESSOR_ARCHITECTURE", "AMD64")
+    _system = os.environ.get("OS", "Windows_NT").replace("_NT", "")
+    platform.machine = lambda: _arch
+    platform.system = lambda: _system
+
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
 import numpy as np
-import os
 import json
 import math
 import urllib.parse
@@ -102,12 +110,20 @@ hospitals = [
     'Dokuz Eylul Hospital', 'Cigli Training and Research State Hospital'
 ]
 hospital_coordinates = {
-    'Ege University Hospital': (38.4569, 27.2177),
-    'Tepecik Training and Research Hospital': (38.4266, 27.1446),
-    'Alsancak Nevvar Salih Isgoren State Hospital': (38.4379, 27.1462),
-    'Izmir City Hospital': (38.4863, 27.1740),
-    'Dokuz Eylul Hospital': (38.3889, 27.0428),
-    'Cigli Training and Research State Hospital': (38.4897, 27.0599)
+    'Ege University Hospital': (38.4566942, 27.2099364),
+    'Tepecik Training and Research Hospital': (38.4230722, 27.1659604),
+    'Alsancak Nevvar Salih Isgoren State Hospital': (38.4343139, 27.1430765),
+    'Izmir City Hospital': (38.4848619, 27.1784716),
+    'Dokuz Eylul Hospital': (38.3947268, 27.0323447),
+    'Cigli Training and Research State Hospital': (38.4998565, 27.0494967)
+}
+hospital_map_urls = {
+    'Izmir City Hospital': 'https://www.google.com/maps/place/%C4%B0zmir+%C5%9Eehir+Hastanesi/@44.8869346,-25.0364219,3z/data=!4m6!3m5!1s0x14bbd7dfa8802361:0xc19f1597aa3ffd81!8m2!3d38.4848619!4d27.1784716!16s%2Fg%2F11flgqgrsc?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
+    'Ege University Hospital': 'https://www.google.com/maps/place/Ege+%C3%9Cniversitesi+T%C4%B1p+Fak%C3%BCltesi+Hastanesi/@44.8869346,-25.0364219,3z/data=!4m6!3m5!1s0x14b97d25a63c5665:0x1254f127dfa9fbf9!8m2!3d38.4566942!4d27.2099364!16s%2Fg%2F1x5bblkm?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
+    'Tepecik Training and Research Hospital': 'https://www.google.com/maps/place/%C4%B0zmir+Tepecik+E%C4%9Fitim+Ara%C5%9Ft%C4%B1rma+Hastanesi/@38.4230722,27.1659604,17z/data=!3m1!4b1!4m6!3m5!1s0x14bbd887ea422985:0x22b5ad1c637eb863!8m2!3d38.4230722!4d27.1659604!16s%2Fg%2F1tfn_slz?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
+    'Alsancak Nevvar Salih Isgoren State Hospital': 'https://www.google.com/maps/place/Alsancak+Nevvar+Salih+%C4%B0%C5%9Fg%C3%B6ren+Devlet+Hastanesi/@44.8869346,-25.0364219,3z/data=!4m6!3m5!1s0x14bbd85958184dd7:0xd461326cb2dc8ae5!8m2!3d38.4343139!4d27.1430765!16s%2Fg%2F1td0jq68?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
+    'Dokuz Eylul Hospital': 'https://www.google.com/maps/place/%C4%B0nciralt%C4%B1,+Dokuz+Eyl%C3%BCl+%C3%9Cnv.+Hst.,+35330+Bal%C3%A7ova%2F%C4%B0zmir/@38.3947432,27.0220664,15z/data=!3m1!4b1!4m6!3m5!1s0x14bbdcf5f4c482e5:0x9714797844847353!8m2!3d38.3947268!4d27.0323447!16s%2Fg%2F11byl25n2x?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D',
+    'Cigli Training and Research State Hospital': 'https://www.google.com/maps/place/%C3%87i%C4%9Fli+E%C4%9Fitim+Ara%C5%9Ft%C4%B1rma+Devlet+Hastanesi/@38.5010481,27.0488833,17z/data=!4m15!1m8!3m7!1s0x14bbd09a6a8bcb45:0xd26ccc739379d84b!2zS8O8w6fDvGsgw4dpxJ9saSwgODc4MC8xMS4gU2suIE5vOjM1LCAzNTYxMCBBb3NiL8OHacSfbGkvxLB6bWly!3b1!8m2!3d38.5010481!4d27.0488833!16s%2Fg%2F11q2nlklxc!3m5!1s0x14bbd09a31c767c1:0x4cc049ecf86c6593!8m2!3d38.4998565!4d27.0494967!16s%2Fg%2F11g8wh0kj9?entry=ttu&g_ep=EgoyMDI2MDQxMy4wIKXMDSoASAFQAw%3D%3D'
 }
 OSRM_TABLE_BASE_URL = "https://router.project-osrm.org/table/v1/driving/"
 
@@ -167,6 +183,10 @@ def haversine_km(lat1, lon1, lat2, lon2):
         + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(d_lon / 2) ** 2
     )
     return 2 * earth_radius_km * math.asin(math.sqrt(a))
+
+
+def build_hospital_map_url(hospital_name):
+    return hospital_map_urls.get(hospital_name, "https://www.google.com/maps")
 
 def get_osrm_route_metrics(user_lat, user_lng, hospital_coords):
     hospital_names = list(hospital_coords.keys())
@@ -327,11 +347,7 @@ def predict():
         suitable_doctors['Eta_Min'] = suitable_doctors['Hospital'].map(hospital_eta)
         suitable_doctors['Eta_Min'] = suitable_doctors['Eta_Min'].round(0)
         suitable_doctors['Title_Score'] = suitable_doctors['Doctor_Name'].apply(score_title)
-        suitable_doctors['Map_Url'] = suitable_doctors['Hospital'].map(
-            lambda h: f"https://www.google.com/maps/search/?api=1&query={hospital_coordinates[h][0]},{hospital_coordinates[h][1]}"
-            if h in hospital_coordinates
-            else "https://www.google.com/maps"
-        )
+        suitable_doctors['Map_Url'] = suitable_doctors['Hospital'].map(build_hospital_map_url)
         suitable_doctors = suitable_doctors.dropna(subset=['Distance'])
         
         suitable_doctors['Score'] = (

@@ -1,3 +1,13 @@
+---
+title: I-Kit Health Pro
+emoji: 🩺
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # I-Kit Health Pro
 
 AI-assisted thyroid decision-support and specialist recommendation platform for early thyroid risk assessment.
@@ -13,7 +23,7 @@ AI-assisted thyroid decision-support and specialist recommendation platform for 
    python app.py
    ```
 3. Open:
-   - `http://localhost:7860`
+ - `http://localhost:7860`
 
 ## Interface Preview
 
@@ -79,5 +89,5 @@ This project was developed with the scope and support framework of **TUBITAK 220
 
 ## Clinical Safety Note
 
-This system does **not** provide a definitive medical diagnosis.  
+This system does **not** provide a definitive medical diagnosis. 
 It is intended as a **clinical decision-support tool** to assist healthcare professionals.

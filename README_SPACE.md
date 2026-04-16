@@ -69,11 +69,7 @@ This project was developed with the scope and support framework of **TUBITAK 220
 - `templates/index.html` - user interface
 - `artifacts/` - trained model and metadata
 - `thyroidDF.csv` - source dataset
-- `evaluate_2209a.py` - reproducible evaluation script
-- `scripts/build_project_profile_pdf.py` - project profile PDF builder
-- `scripts/build_application_pdf.py` - alternative application PDF builder
 - `scripts/upload_to_hf_space.py` - Hugging Face Space upload helper
-- `archive/legacy/` - archived historical scripts and documents
 
 ## Data and Usage Notice
 
@@ -85,7 +81,6 @@ This project was developed with the scope and support framework of **TUBITAK 220
 
 - Model file: `artifacts/catboost_thyroid_model.cbm`
 - Metadata file: `artifacts/model_metadata.json`
-- Re-evaluation script: `evaluate_2209a.py`
 - Generated evaluation outputs are intentionally excluded from version control to keep the repository clean.
 
 ## Clinical Safety Note

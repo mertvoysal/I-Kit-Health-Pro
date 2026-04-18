@@ -162,8 +162,8 @@ doctor_data = {
 df_doctors = pd.DataFrame(doctor_data)
 
 def score_title(name):
-    if "Prof." in name: return 100
-    elif "Assoc. Prof." in name: return 80
+    if "Assoc. Prof." in name: return 80
+    elif "Prof." in name: return 100
     elif "Spec." in name: return 60
     else: return 40
 
